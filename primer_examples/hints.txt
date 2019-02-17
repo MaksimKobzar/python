@@ -1,0 +1,22 @@
+1.Python Virtual Environment
+
+The main purpose of Python virtual environments is to create an isolated environment for Python projects. This means that each project can have its own dependencies, regardless of what dependencies every
+other project has.
+The great thing about this is that there are no limits to the number of environments you can have since they’re just directories containing a few scripts. Plus, they’re easily created using the virtualenv or
+pyenv command line tools.
+### Easy way to build yout virtual environment via command line
+$ python3 -m venv my_env_name
+
+Here’s what each folder contains:
+* bin: files that interact with the virtual environment
+* include: C headers that compile the Python packages
+* lib: a copy of the Python version along with a site-packages folder where each dependency is installed
+
+2.PIP
+Pip is a package management system that simplifies installation and management of software packages written in Python such as those found in the Python Package Index (PyPI).
+
+In most cases you should use pip within a virtual environments only. Python Virtual Environments allows you to install Python modules in an isolated location for a specific project, rather than being installed globally. This way you do not have to worry about affecting other Python projects.
+# To save package requirements
+$ pip freeze > requirements.txt
+# To apply package requirements
+pip install -r requirements.txt
