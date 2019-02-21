@@ -1,0 +1,31 @@
+# Configure environment
+? How would I configure my environment ?
+
+# Configure terminal
+? What configuration would I use for terminal ?
+
+# Update already installed soft
+$ sudo apt-get update && sudo apt-get upgrade
+
+# Install Google Chrome
+
+# Install GIT
+sudo apt install git
+# Install SMARTGIT
+https://www.syntevo.com/smartgit/download/
+# Configure SMARTGIT
+
+# Install the latest Python3
+$ sudo apt-get install python3
+
+# Install Sublime Text 3
+# Configure Sublime Text 3
+? What configuration would I use for python coding ?
+# Install Package Control for Sublime Text 3
+# Install Package Piatto for Sublime Text 3
+
+
+# Install pip package
+$ sudo apt-get install -y python3-pip
+# Install venv package
+$ sudo apt-get install -y python3-venv
