@@ -1,0 +1,9 @@
+setuptools~=46.4.0
+verilogparser~=0.23
+Jinja2~=2.11.2
+ply~=3.11
+PySimpleGUI~=4.19.0
+pyverilog~=1.2.1
+hdlparse~=1.0.4
+pyVHDLParser~=0.4.3
+pyparsing~=2.4.7
