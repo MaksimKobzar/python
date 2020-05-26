@@ -1,0 +1,61 @@
+Metadata-Version: 2.1
+Name: SphinxExtensions
+Version: 0.2.0
+Summary: Extensions for the Sphinx documentation tool.
+Home-page: https://github.com/Paebbels/SphinxExtensions
+Author: Patrick Lehmann
+Author-email: Paebbels@gmail.com
+License: UNKNOWN
+Project-URL: Documentation, https://SphinxExtensions.readthedocs.io/en/latest/
+Project-URL: Source Code, https://github.com/Paebbels/SphinxExtensions
+Project-URL: Issue Tracker, https://github.com/Paebbels/SphinxExtensions/issues
+Keywords: Python3 Sphinx-Extension
+Platform: UNKNOWN
+Classifier: License :: OSI Approved :: Apache Software License
+Classifier: Operating System :: OS Independent
+Classifier: Programming Language :: Python :: 3 :: Only
+Classifier: Programming Language :: Python :: 3.5
+Classifier: Programming Language :: Python :: 3.6
+Classifier: Programming Language :: Python :: 3.7
+Classifier: Programming Language :: Python :: 3.8
+Classifier: Development Status :: 4 - Beta
+Classifier: Framework :: Sphinx :: Extension
+Classifier: Topic :: Utilities
+Requires-Python: >=3.5
+Description-Content-Type: text/markdown
+Requires-Dist: pyAttributes
+
+[![PyPI - License](https://img.shields.io/pypi/l/SphinxExtensions?logo=PyPI)](LICENSE.md)
+[![GitHub tag (latest SemVer incl. pre-release)](https://img.shields.io/github/v/tag/Paebbels/SphinxExtensions?logo=GitHub&include_prereleases)](https://github.com/Paebbels/SphinxExtensions/tags)
+[![GitHub release (latest SemVer incl. including pre-releases)](https://img.shields.io/github/v/release/Paebbels/SphinxExtensions?logo=GitHub&include_prereleases)](https://github.com/Paebbels/SphinxExtensions/releases/latest)
+[![GitHub release date](https://img.shields.io/github/release-date/Paebbels/SphinxExtensions?logo=GitHub&)](https://github.com/Paebbels/SphinxExtensions/releases)
+[![Libraries.io status for latest release](https://img.shields.io/librariesio/release/pypi/SphinxExtensions)](https://libraries.io/github/Paebbels/SphinxExtensions)
+[![Requires.io](https://img.shields.io/requires/github/Paebbels/SphinxExtensions)](https://requires.io/github/Paebbels/SphinxExtensions/requirements/?branch=master)  
+[![Travis](https://img.shields.io/travis/com/Paebbels/SphinxExtensions?logo=Travis)](https://travis-ci.com/Paebbels/SphinxExtensions)
+[![PyPI](https://img.shields.io/pypi/v/SphinxExtensions?logo=PyPI)](https://pypi.org/project/SphinxExtensions/)
+![PyPI - Status](https://img.shields.io/pypi/status/SphinxExtensions?logo=PyPI)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/SphinxExtensions?logo=PyPI)
+[![Dependent repos (via libraries.io)](https://img.shields.io/librariesio/dependent-repos/pypi/SphinxExtensions)](https://github.com/Paebbels/SphinxExtensions/network/dependents)  
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/6cf5edeb1a0440e08ad17ad3651e229f)](https://www.codacy.com/manual/Paebbels/SphinxExtensions)
+[![Libraries.io SourceRank](https://img.shields.io/librariesio/sourcerank/pypi/SphinxExtensions)](https://libraries.io/github/Paebbels/SphinxExtensions/sourcerank)
+[![Read the Docs](https://img.shields.io/readthedocs/sphinxextensions)](https://SphinxExtensions.readthedocs.io/en/latest/)
+
+# SphinxExtensions
+
+Extensions for the Sphinx documentation tool.
+
+
+## Contributors
+
+* [Patrick Lehmann](https://github.com/Paebbels) (Maintainer)
+
+
+## License
+
+This library is licensed under [Apache License 2.0](LICENSE.md)
+
+-------------------------
+
+SPDX-License-Identifier: Apache-2.0
+
+
