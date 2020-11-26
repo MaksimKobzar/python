@@ -1,5 +1,21 @@
 #!/usr/bin/env python3
 
+"""
+
+ALGORITHM:
+    * open file
+    * go through lines one by one
+    * find VALID lines (VALID lines that are not empty and that are not commented)
+    * IF
+        the 1st  VALID line starts with `ifndef
+        the 2nd  VALID line starts with `define
+        the last VALID line starts with `endif
+       => it`s OKAY
+    * ELSE
+       => file doesn't have GUARDS, they can be injected
+
+"""
+
 # TODO:
 # * chmod of files
 # * filter lines from this /* comments */
@@ -51,7 +67,7 @@ def check_settings(settings):
         print('Target path is not valid.')
         do_exit = 1
     if do_exit == 1:
-        print('For more information call: ./%s -h') % (SCRIPT_FILENAME)
+        print('For more information call: ./%s -h' % (SCRIPT_FILENAME))
         exit(1)
 
 
@@ -142,18 +158,3 @@ def main(args):
 if __name__ == '__main__':
     main(argv[1:])
 
-"""
-
-ALGORITHM:
-    * open file
-    * go through lines one by one
-    * find VALID lines (VALID lines that are not empty and that are not commented)
-    * IF
-        the 1st  VALID line starts with `ifndef
-        the 2nd  VALID line starts with `define
-        the last VALID line starts with `endif
-       => it`s OKAY
-    * ELSE
-       => file doesn`t have GUARDS
-
-"""
