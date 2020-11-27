@@ -18,10 +18,10 @@ swwqs
 */
 
 
-`ifndef INC_SR_ETH_DR_SEQ
+`ifndef   INC_SR_ETH_DR_SEQ //
 // `define INC_SR_ETH_DR_SEQ
 
-`define INC_SR_ETH_DR_SEQ
+      `define  INC_SR_ETH_DR_SEQ    
 
 /*
 dwqwq

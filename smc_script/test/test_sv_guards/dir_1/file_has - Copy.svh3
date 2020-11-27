@@ -21,7 +21,7 @@ swwqs
 `ifndef INC_SR_ETH_DR_SEQ
 // `define INC_SR_ETH_DR_SEQ
 
-`define INC_SR_ETH_DR_SEQ
+`define INC_SR_1ETH_DR_SEQ
 
 /*
 dwqwq

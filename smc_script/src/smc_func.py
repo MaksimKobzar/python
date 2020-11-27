@@ -3,8 +3,8 @@
 
 def filter_extension(file, extns=None):
     for extn in extns:
-        # If last chars in file name is '.extension_name'
-        if file[-(len(extn) + 1)] is ('.' + str(extn)):
+        # If last chars in file name is 'extension_name'
+        if file[-len(extn):] == str(extn):
             return True
     return False
 
