@@ -18,10 +18,12 @@ swwqs
 */
 
 
-`ifndef INC_SR_ETH_DR_SEQ
-// `define INC_SR_ETH_DR_SEQ
+`ifndef INC_SR_ETH_DR_SEQ/*
+dwqwq
 
-`define INC_SR_ETH_DR_SEQ
+*/
+
+`define INC_SR_ETH_DR_SEQ//LK::L:LKK:L
 
 /*
 dwqwq
@@ -66,13 +68,13 @@ class sr_eth_dm_seq extends sr_eth_base_seq;
 endclass
 
 
-`endif
-
-/*
+`endif /*
 faweqf
 
 qwd
 wq
 wq
 
-*/
+aaa//*/ 
+
+

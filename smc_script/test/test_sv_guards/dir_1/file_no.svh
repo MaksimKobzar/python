@@ -18,7 +18,7 @@ swwqs
 */
 
 
-`ifndef INC_SR_ETH_DR_SEQ
+// `ifndef INC_SR_ETH_DR_SEQ
 // `define INC_SR_ETH_DR_SEQ
 
 `define INC_SR_ETH_DR_SEQ
@@ -66,7 +66,7 @@ class sr_eth_dm_seq extends sr_eth_base_seq;
 endclass
 
 
-// `endif
+`endif
 
 /*
 faweqf

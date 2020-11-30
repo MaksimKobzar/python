@@ -1,6 +1,30 @@
 #!/usr/bin/env python3
 
+"""
+
+ALGORITHM:
+    * open file
+    * go through lines one by one
+    * find VALID lines (VALID lines that are not empty and that are not commented)
+    * IF
+        the 1st  VALID line starts with `ifndef
+        the 2nd  VALID line starts with `define
+        the last VALID line starts with `endif
+       => it`s OKAY
+    * ELSE
+       => file doesn't have GUARDS, they can be injected
+
+"""
+
+# TODO:
+
+import getopt
 from sys import argv, exit
+from os import path, walk, getcwd, remove, chmod
+from smc_func import filter_extension as fe
+from smc_func import smart_walk
+
+
 from smc_func import without
 
 
@@ -79,14 +103,23 @@ def run_main(args):
 
     # Initial settings
     settings['path'] = 'test/class.sv'  # path
-    settings['extern_or_not'] = True  # True - external, False - not
-    settings['dir_or_file'] = False  # True - work with directory, False - work with file
+    settings['dir_not_file'] = False  # True - work with directory, False - work with file
     settings['silent'] = False
+    settings['external_or_internal'] = True  # True - external, False - internal
 
     get_settings(args, settings)
     check_settings(settings)
-    if not settings['dir_or_file']:
-        process_file(settings['path'], settings)
+
+    smart_walk(settings, process_file, ['v', 'sv', 'svh'])
+    # # Analyze files
+    # if settings['dir_not_file']:  # Directory
+    #     p = walk(settings['path'])
+    #     for root, dirs, files in p:
+    #         for file in files:
+    #             if fe(file, ['v', 'sv', 'svh']):
+    #                 process_file(path.join(root, file), settings)
+    # else:  # File
+    #     process_file(settings['path'], settings)
 
 
 def main(args):

@@ -18,7 +18,6 @@ ALGORITHM:
 
 # TODO:
 # * chmod of files
-# * filter lines from this /* comments */
 
 import getopt
 from sys import argv, exit
@@ -27,6 +26,21 @@ from smc_func import filter_extension as fe
 
 # Constants
 SCRIPT_FILENAME = path.basename(__file__)
+ST_COMMENTED = '/*'
+FN_COMMENTED = '*/'
+COMMENTED_LINE = '//'
+
+
+def take_from_n_to_fn(small, big):
+    if small in big:
+        return big[big.index(small) + len(small):]
+    return big
+
+
+def take_from_n_to_st(small, big):
+    if small in big:
+        return big[:big.index(small)]
+    return big
 
 
 def receive_settings(args, settings):
@@ -58,24 +72,24 @@ def receive_settings(args, settings):
 def check_settings(settings):
     do_exit = 0
     if settings['path'] == '':
-        print('Target path should be set.')
+        print('[Error] Target path should be set.')
         do_exit = 1
     elif path.exists(settings['path']):
         if path.isdir(settings['path']):
             settings['dir_not_file'] = True
     else:
-        print('Target path is not valid.')
+        print('[Error] Target path is not valid.')
         do_exit = 1
     if do_exit == 1:
         print('For more information call: ./%s -h' % SCRIPT_FILENAME)
         exit(1)
 
 
-def valid_line(commented, idx, line):
+def valid_line(line):
     line = line.strip()
     # Not empty and not commented
-    if idx not in commented and line != '' and line != '\n':
-        print('DBG: line %0s is valid' % line)
+    if line != '' and line != '\n':
+        # print('DBG: line \'%s\' is valid' % line)
         return True
     return False
 
@@ -87,14 +101,29 @@ def line_has_text(line, text):
         return False
 
 
-def last_valid_line_has_text(commented, lines, text):
-    # for line in reversed(lines):
-    print('last_valid_line_has_text')
-    for idx in range(len(lines)-1, 0, -1):
-        if valid_line(commented, idx, lines[idx]):
-            if line_has_text(lines[idx], text):
-                return True
-            break
+def last_valid_line_has_text(lines, text):
+    in_commented_zone = 0
+    # print('DBG: last_valid_line_has_text() is started')
+    # go through lines in reversed order:
+    for idx in range(len(lines) - 1, 0, -1):
+        t = lines[idx].strip()
+        if in_commented_zone:
+            if ST_COMMENTED in t:
+                # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_st(ST_COMMENTED, t)))
+                t = take_from_n_to_st(ST_COMMENTED, t)
+                in_commented_zone = 0
+            else:
+                t = ''
+        else:
+            if FN_COMMENTED in t:
+                # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_fn(FN_COMMENTED, t)))
+                t = take_from_n_to_fn(FN_COMMENTED, t)
+                in_commented_zone = 1
+            if COMMENTED_LINE in t:
+                # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_st(COMMENTED_LINE, t)))
+                t = take_from_n_to_st(COMMENTED_LINE, t)
+        if valid_line(t) and text in t:
+            return True
     return False
 
 
@@ -107,43 +136,50 @@ def insert_guards(file, lines, line_idx, settings):
 
 
 def get_tag_from_line(line, before_tag):
-    line_splits = line.strip().split()
-    print('DBG: before_tag %s, line_splits %s' % (before_tag, line_splits))
-    if before_tag in line_splits[0]:
-        return line_splits[1]
-    print('return -1')
+    frm_line = take_from_n_to_st(COMMENTED_LINE, line)
+    frm_line = take_from_n_to_st(ST_COMMENTED, frm_line)
+    frm_line = take_from_n_to_fn(FN_COMMENTED, frm_line)
+    frm_line = frm_line.strip().split()
+    # print('DBG: before_tag %s, line_splits %s' % (before_tag, frm_line))
+    if before_tag == frm_line[0]:
+        return frm_line[1]
+    # print('DBG: get_tag_from_line -1')
     return -1
-    # st_idx = line.find(before_tag)
-    # line = line[st_idx:]
 
 
-def has_sv_guards(commented, lines, idx1, idx2):
+def has_sv_guards(lines, idx1, idx2):
     return (
-            # line_has_text(lines[idx1], '`ifndef ') and
-            # line_has_text(lines[idx2], '`define ') and
-            last_valid_line_has_text(commented, lines, '`endif') and
-            get_tag_from_line(lines[idx1], '`ifndef ') != -1 and
-            get_tag_from_line(lines[idx1], '`ifndef ') == get_tag_from_line(lines[idx2], '`define ')
+            last_valid_line_has_text(lines, '`endif') and
+            get_tag_from_line(lines[idx1], '`ifndef') != -1 and
+            get_tag_from_line(lines[idx1], '`ifndef') == get_tag_from_line(lines[idx2], '`define')
 
     )
 
 
-def get_commented_lines(lines):
+def count_guard_keywords(lines):
+    ifdef_n = 0
+    ifndef_n = 0
+    endf_n = 0
     in_commented_zone = 0
-    commented = list()
     for idx in range(len(lines)):
         t = lines[idx].strip()
         if in_commented_zone:
-            commented.append(idx)
-            if t[-2:] == '*/':
+            if FN_COMMENTED in t:
+                t = take_from_n_to_fn(FN_COMMENTED, t)
                 in_commented_zone = 0
-        elif t[:2] == '//':
-            commented.append(idx)
-        elif t[:2] == '/*':
-            commented.append(idx)
-            in_commented_zone = 1
-    print('commented_lines', commented)
-    return commented
+            else:
+                t = ''
+        else:
+            if COMMENTED_LINE in t:
+                t = take_from_n_to_st(COMMENTED_LINE, t)
+            if ST_COMMENTED in t:
+                t = take_from_n_to_st(ST_COMMENTED, t)
+                in_commented_zone = 1
+        if valid_line(t):
+            if '`ifdef' in t: ifdef_n += 1
+            if '`ifndef' in t: ifndef_n += 1
+            if '`endif' in t: endf_n += 1
+    return ifdef_n, ifndef_n, endf_n
 
 
 def process_file(filepath, settings):
@@ -152,26 +188,46 @@ def process_file(filepath, settings):
     with open(filepath, open_mod) as f:
         lines = f.readlines()
 
-        commented = get_commented_lines(lines)
-
         first_valid_line_found = 0
         first_valid_line_idx = 0
+        in_commented_zone = 0
+
         for idx in range(len(lines)):
-            if valid_line(commented, idx, lines[idx]):
+            t = lines[idx].strip()
+            if in_commented_zone:
+                if FN_COMMENTED in t:
+                    # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_fn(FN_COMMENTED, t)))
+                    t = take_from_n_to_fn(FN_COMMENTED, t)
+                    in_commented_zone = 0
+                else:
+                    t = ''
+            else:
+                if COMMENTED_LINE in t:
+                    # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_st(COMMENTED_LINE, t)))
+                    t = take_from_n_to_st(COMMENTED_LINE, t)
+                if ST_COMMENTED in t:
+                    # print('DBG: Extract NOT commented part %s -> %s' % (t, take_from_n_to_st(ST_COMMENTED, t)))
+                    t = take_from_n_to_st(ST_COMMENTED, t)
+                    in_commented_zone = 1
+            if valid_line(t):
                 if first_valid_line_found == 0:
                     first_valid_line_found = 1
                     first_valid_line_idx = idx
                 else:
-                    print('idx1 %0d idx2 %0d' % (first_valid_line_idx, idx))
-                    if has_sv_guards(commented, lines, first_valid_line_idx, idx):  # Has SV_GUARD
+                    # print('DBG: idx1 %0d, idx2 %0d' % (first_valid_line_idx, idx))
+                    if has_sv_guards(lines, first_valid_line_idx, idx):  # Has SV_GUARD
                         if not settings['silent']:
-                            print('SV_GUARDS are already in the file: %s' % filepath)
+                            print('SV_GUARDs are already in the file: %s' % filepath)
                     else:  # No SV_GUARD
                         if not settings['silent'] or settings['no_change']:
-                            print('There is no SV_GUARDS for file: %s' % filepath)
+                            print('SV_GUARDs are missing for file: %s' % filepath)
+                            ifdef_n, ifndef_n, endf_n = count_guard_keywords(lines)
+                            if (ifdef_n + ifndef_n) != endf_n:
+                                print('This file needs more attention: `ifdef - %d, `ifndef - %d, `endif - %d' %
+                                      (ifdef_n, ifndef_n, endf_n))
                         if not settings['no_change']:
-                            insert_guards(f, lines, idx, settings)
-                            print('SV_GUARDS have been added for file: %s' % filepath)
+                            insert_guards(f, lines, first_valid_line_idx, settings)
+                            print('SV_GUARDs have been added for file: %s' % filepath)
                     # stop iterations after the 2nd valid line
                     break
 
@@ -188,16 +244,14 @@ def run_main(args):
     # Setting are received and checked
     settings = receive_settings(args, settings)
     check_settings(settings)
-    print('setting:', settings)
+    # print('DBG: setting', settings)
 
     # Analyze files
     if settings['dir_not_file']:  # Directory
         p = walk(settings['path'])
         for root, dirs, files in p:
             for file in files:
-                print('file:', file)
                 if fe(file, ['v', 'sv', 'svh']):
-                    print('DBG: find .v/.sv/.svh')
                     process_file(path.join(root, file), settings)
     else:  # File
         process_file(settings['path'], settings)

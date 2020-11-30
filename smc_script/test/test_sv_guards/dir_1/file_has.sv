@@ -66,13 +66,4 @@ class sr_eth_dm_seq extends sr_eth_base_seq;
 endclass
 
 
-`endif
-
-/*
-faweqf
-
-qwd
-wq
-wq
-
-*/
+`endif    //fsdaea
