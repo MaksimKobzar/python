@@ -23,6 +23,7 @@ import getopt
 from sys import argv, exit
 from os import path, walk, getcwd, remove, chmod
 from smc_func import filter_extension as fe
+from smc_func import smart_walk
 
 # Constants
 SCRIPT_FILENAME = path.basename(__file__)
@@ -247,14 +248,7 @@ def run_main(args):
     # print('DBG: setting', settings)
 
     # Analyze files
-    if settings['dir_not_file']:  # Directory
-        p = walk(settings['path'])
-        for root, dirs, files in p:
-            for file in files:
-                if fe(file, ['v', 'sv', 'svh']):
-                    process_file(path.join(root, file), settings)
-    else:  # File
-        process_file(settings['path'], settings)
+    smart_walk(settings, process_file, ['v', 'sv', 'svh'])
 
 
 def main(args):
