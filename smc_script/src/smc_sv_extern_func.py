@@ -34,36 +34,50 @@ def parse_sv_file(file):
         {
             'class_name': 'hsr_eth_dm_seq',
             'class_start': 9,
-            'class_end': 41,
+            'class_end': 44,
             'methods': [
                 {
-                    'method_name': 'new',
-                    'method_type': 'function',
-                    'method_extern': False,
-                    'method_def_line': 16,
-                    'method_imp_st_line': 16,
-                    'method_imp_fn_line': 19,
-                    'method_keywords': []
+                    'keywords': '',
+                    'type': 'function',
+                    'return': '',
+                    'name': 'new',
+                    'args': 'string name = "hsr_eth_dm_seq"',
+                    'extern': False,
+                    'def_st_line': 16,
+                    'def_fn_line': 16,
+                    'imp_st_line': 17,
+                    'imp_fn_line': 19
                 },
                 {
-                    'method_name': 'pre_body',
-                    'method_type': 'task',
-                    'method_extern': False,
-                    'method_def_line': 21,
-                    'method_imp_st_line': 21,
-                    'method_imp_fn_line': 26,
-                    'method_keywords': []
+                    'keywords': '',
+                    'type': 'task',
+                    'return': '',
+                    'name': 'pre_body',
+                    'args': '\ninput bit bla, hey,\noutput bit gkgkgk\n',
+                    'extern': False,
+                    'def_st_line': 21,
+                    'def_fn_line': 24,
+                    'imp_st_line': 25,
+                    'imp_fn_line': 29
                 },
                 {
-                    'method_name': 'body',
-                    'method_type': 'task',
-                    'method_extern': False,
-                    'method_def_line': 28,
-                    'method_imp_st_line': 28,
-                    'method_imp_fn_line': 39,
-                    'method_keywords': ['virtual']
+                    'keywords': 'virtual',
+                    'type': 'function',
+                    'return': 'bit [`SHHHH_gj-1:0]',
+                    'name': 'pre_body',
+                    'args': 'bit foo,\nbit bar',
+                    'extern': False,
+                    'def_st_line': 31,
+                    'def_fn_line': 32,
+                    'imp_st_line': 33,
+                    'imp_fn_line': 44
                 }
             ]
+        },
+        {
+            'class_name': 'hsr_eth_dm_seq',
+            'class_start': 9,
+            'class_end': 44
         }
     ]
     return sv_info

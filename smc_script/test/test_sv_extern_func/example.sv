@@ -14,24 +14,23 @@ class hsr_eth_dm_seq extends sr_eth_base_seq;
 
   `uvm_object_utils(hsr_eth_dm_seq)
 
-  extern function new(string name = "hsr_eth_dm_seq");
-  extern task pre_body();
-  extern virtual task body();
-endclass
-
-function hsr_eth_dm_seq::new(string name = "hsr_eth_dm_seq");
+  function new(string name = "hsr_eth_dm_seq");
     super.new(name);
     dm = new("dm");
   endfunction
 
-task hsr_eth_dm_seq::pre_body();
+  task pre_body(
+    input bit bla, hey,
+    output bit gkgkgk
+  );
     uvm_mem mem;
     super.pre_body();
     if(dm == null) `uvm_fatal(get_full_name(), $sformatf("dm should be set in %0s", get_full_name()))
     if(fm == null) `uvm_fatal(get_full_name(), $sformatf("fm should be set in %0s", get_full_name()))
   endtask
 
-virtual task hsr_eth_dm_seq::body();
+  virtual function bit [`SHHHH_gj-1:0] body(bit foo,
+    bit bar);
     `uvm_info(get_full_name(), "is started", UVM_MEDIUM)
 
     forever begin
@@ -42,7 +41,9 @@ virtual task hsr_eth_dm_seq::body();
     end
 
     `uvm_info(get_full_name(), "is ended", UVM_MEDIUM)
-  endtask
+  endfunction
+endclass
+
 
 
 `endif
