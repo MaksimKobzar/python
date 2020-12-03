@@ -14,6 +14,13 @@ def filter_extension(file, extns=None):
         return False
 
 
+def without_s(s, get_rid_of):
+    if get_rid_of not in s:
+        print('[Error] String \'%s\' doesn\'t contain \'%s\'.', s, get_rid_of)
+        return s
+    return s[:s.find(get_rid_of) - 1] + s[s.find(get_rid_of) + len(get_rid_of):]
+
+
 def without(iterable, remove_indices):
     # Returns an iterable for a collection or iterable,
     # which returns all items except the specified indices.

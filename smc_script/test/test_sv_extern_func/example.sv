@@ -14,7 +14,7 @@ class hsr_eth_dm_seq extends sr_eth_base_seq;
 
   `uvm_object_utils(hsr_eth_dm_seq)
 
-  function new(string name = "hsr_eth_dm_seq");
+  function new (string name = "hsr_eth_dm_seq");
     super.new(name);
     dm = new("dm");
   endfunction
@@ -29,7 +29,7 @@ class hsr_eth_dm_seq extends sr_eth_base_seq;
     if(fm == null) `uvm_fatal(get_full_name(), $sformatf("fm should be set in %0s", get_full_name()))
   endtask
 
-  virtual function bit [`SHHHH_gj-1:0] body(bit foo,
+  virtual function bit [`SHHHH_gj-1:0] body (bit foo,
     bit bar);
     `uvm_info(get_full_name(), "is started", UVM_MEDIUM)
 
@@ -43,6 +43,7 @@ class hsr_eth_dm_seq extends sr_eth_base_seq;
     `uvm_info(get_full_name(), "is ended", UVM_MEDIUM)
   endfunction
 endclass
+
 
 
 

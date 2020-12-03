@@ -14,10 +14,14 @@ class hsr_eth_dm_seq extends sr_eth_base_seq;
 
   `uvm_object_utils(hsr_eth_dm_seq)
 
-  extern function new(string name = "hsr_eth_dm_seq");
-  extern task pre_body();
-  extern virtual task body();
+  extern function new(
+    string name = "hsr_eth_dm_seq"
+  );
+  extern task pre_body ();
 
+  extern virtual function bit [`AA-1:0] body (
+    input bit a = 0
+  );
 endclass
 
 
@@ -33,7 +37,9 @@ task hsr_eth_dm_seq::pre_body();
   if(fm == null) `uvm_fatal(get_full_name(), $sformatf("fm should be set in %0s", get_full_name()))
 endtask
 
-virtual task hsr_eth_dm_seq::body();
+virtual function bit [`AA-1:0] hsr_eth_dm_seq::body(
+  input bit a = 0
+);
   `uvm_info(get_full_name(), "is started", UVM_MEDIUM)
 
   forever begin
