@@ -47,7 +47,7 @@ ptyprocess==0.6.0
 pycairo==1.16.2
 pycparser==2.19
 pycrypto==2.6.1
-Pygments==2.2.0
+Pygments==2.7.4
 pygobject==3.26.1
 pyOpenSSL==17.5.0
 python-dateutil==2.7.5
