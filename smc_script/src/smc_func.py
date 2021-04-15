@@ -16,7 +16,7 @@ def filter_extension(file, extns=None):
 
 def without_s(s, get_rid_of):
     if get_rid_of not in s:
-        print('[Error] String \'%s\' doesn\'t contain \'%s\'.', s, get_rid_of)
+        print('[Error] String \'%s\' doesn\'t contain \'%s\'.' % (s, get_rid_of))
         return s
     return s[:s.find(get_rid_of) - 1] + s[s.find(get_rid_of) + len(get_rid_of):]
 

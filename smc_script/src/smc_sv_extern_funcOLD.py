@@ -14,10 +14,7 @@ ALGORITHM for internal -> external:
     7 Write new_lines to file
 
 TESTS:
-    * example_int_simple +
-    * example_int_complex
-    * example_int_multi_class
-    * example_int_mixed
+    * example_int_base
     * example_ext_base
     * example_int_ext_mix
 
@@ -41,8 +38,7 @@ def get_settings(args, settings):
 def inject_class_scope(s, class_name):
     if '(' not in s:
         print('[Error] Method definition doesn\'t contain symbol \'(\': %s ', s)
-    if 'extern ' in s:
-        s = without_s(s, 'extern ')
+    s = without_s(s, 'extern ')
     split = s.split('(')
     split[0] = split[0].strip()
     idx = split[0].rfind(' ')
@@ -55,38 +51,37 @@ def check_settings(settings):
 
 def parse_sv_file(file):
     # sv_info = get_sv_info(file.read())
-    '''
-    sv_info = [  # example_int_simple
+    sv_info = [  # example_int_base
         {
             'name': 'hsr_eth_dm_seq',
             'st_line': 10,
-            'fn_line': 30,
+            'fn_line': 33,
             'methods': [
                 {
                     'type': 'function',
                     'extern': False,
-                    'def_st_line': 16,
-                    'def_fn_line': 16,
-                    'imp_st_line': 17,
-                    'imp_fn_line': 19
+                    'def_st_line': 17,
+                    'def_fn_line': 17,
+                    'imp_st_line': 18,
+                    'imp_fn_line': 20
                 },
                 {
                     'type': 'task',
                     'extern': False,
-                    'def_st_line': 20,
-                    'def_fn_line': 23,
-                    'imp_st_line': 24,
-                    'imp_fn_line': 29
+                    'def_st_line': 22,
+                    'def_fn_line': 25,
+                    'imp_st_line': 26,
+                    'imp_fn_line': 31
                 }
             ]
         }
     ]
     '''
-    sv_info = [  # example_int_complex
+    sv_info = [  # example_int_base
         {
             'name': 'hsr_eth_dm_seq',
             'st_line': 10,
-            'fn_line': 52,
+            'fn_line': 53,
             'methods': [
                 {
                     'type': 'function',
@@ -115,23 +110,22 @@ def parse_sv_file(file):
                 {
                     'type': 'task',
                     'extern': False,
-                    'def_st_line': 35,
-                    'def_fn_line': 35,
-                    'imp_st_line': 36,
-                    'imp_fn_line': 37
+                    'def_st_line': 36,
+                    'def_fn_line': 36,
+                    'imp_st_line': 37,
+                    'imp_fn_line': 38
                 },
                 {
                     'type': 'function',
                     'extern': False,
-                    'def_st_line': 39,
-                    'def_fn_line': 49,
-                    'imp_st_line': 41,
-                    'imp_fn_line': 51
+                    'def_st_line': 40,
+                    'def_fn_line': 41,
+                    'imp_st_line': 42,
+                    'imp_fn_line': 53
                 }
             ]
         }
     ]
-    '''
     sv_info = [ # example_ext_base
         {
             'name': 'hsr_eth_dm_seq',
@@ -176,7 +170,7 @@ def inject_extern(s):
 
 def fill_indices_to_remove(settings, lines, st_idx, fn_idx, remove_indices):
     # Clean class body from methods' implementation
-    opt = 1 if settings['delete_spaces_between_externals'] and lines[fn_idx].isspace() else 0
+    opt = 1 if settings['delete_spaces_between_externals'] is True and lines[fn_idx] == '\n' else 0
     # Form list of removed indexes
     remove_indices += range(st_idx, fn_idx + opt)
     print('DBG: fill_indices_to_remove {%s}' % remove_indices)
@@ -200,40 +194,76 @@ def process_file(filepath, settings):
                     new_lines[method['def_st_line']] = inject_extern(old_lines[method['def_st_line']])
                     # 4. Form list of indices to remove
                     fill_indices_to_remove(settings, old_lines, method['imp_st_line'], method['imp_fn_line'] + 1, remove_indices)
-                # elif method['extern'] and not settings['external_or_internal']:
+                elif method['extern'] and not settings['external_or_internal']:
+                    # Sub 'extern' keyword for all internal methods
+                    lines[method['def_st_line']] = without_s(lines[method['def_st_line']], 'extern ')
+                    # Clean method definition beside 1st line
+                    method['def_st_line'] -= correction
+                    method['def_fn_line'] -= correction
+                    remove_indices += range(
+                        method['def_st_line'] + 1,
+                        method['def_fn_line'] + 1
+                    )
+                    correction += method['def_fn_line'] - method['def_st_line']
+                    # Clean method implementations
+                    opt = 1 if settings['delete_spaces_between_externals'] is True and lines[
+                        method['imp_fn_line'] + 1] == '\n' else 0
+                    remove_indices += range(
+                        method['imp_st_line'],
+                        method['imp_fn_line'] + 1 + opt
+                    )
+
             cls['fn_line'] -= len(remove_indices)
-
-        # 5. Remove lines with corresponding indexes
-        # print('DBG: print remove_indices before without() call - {%s}' % remove_indices)
+        # Remove lines with corresponding indexes
+        print('DBG: print remove_indices before without() call - {%s}' % remove_indices)
         new_lines = list(without(new_lines, remove_indices=remove_indices))
+        
+            new_lines.insert(curr_line_idx, '\n')
+            curr_line_idx += 1
+            print('DBG: curr_line_idx = ', curr_line_idx)
 
-        # cls is class, class is keyword
-        for cls in sv_info:
-            methods_imp_st_line = cls['fn_line'] + 1
-            methods = cls['methods']
+            # Inject method's bodies in the end
             for method in methods:
+                # internal -> external
                 if not method['extern'] and settings['external_or_internal']:
-                    # 6. Copy methods' implementation from old_lines to new_lines after each class
                     method_line_num = method['imp_fn_line'] + 1 + 1 - method['def_st_line']
                     for i in range(method_line_num):
+                        print('DBG: new_lines[%0s] = old_lines[%0s] = {%s}' % (
+                            methods_imp_st_line + i,
+                            method['def_st_line'] + i - 1,
+                            lines[method['def_st_line'] + i - 1]
+                        ))
                         if i == 0:
                             new_line = '\n'
                         else:
-                            s = old_lines[method['def_st_line'] + i - 1]
+                            s = lines[method['def_st_line'] + i - 1]
                             if i == 1:  # method definition start line
                                 new_line = inject_class_scope(s, cls['name'])
                             else:
-                                # if s[:settings['spaces']] == (settings['spaces'] * ' '):
-                                if i == (method_line_num - 1):  # not last
-                                    s = s.lstrip()
-                                    # print('DBG: truncate space in the start of the line: %s -> %s' % (s, s[settings['spaces']:]))
-                                    # s = s[settings['spaces']:]
+                                if s[:settings['spaces']] == (settings['spaces'] * ' '):
+                                    print('DBG: truncate space in the start of the line: %s -> %s' % (
+                                    s, s[settings['spaces']:]))
+                                    s = s[settings['spaces']:]
                                 new_line = s
-                        new_lines.insert(methods_imp_st_line, new_line)
-                        methods_imp_st_line += 1
-                # elif method['extern'] and not settings['external_or_internal']:
+                        new_lines.insert(methods_imp_st_line + i, new_line)
+                    methods_imp_st_line += method_line_num
 
-        # 7. Write all new_lines to file
+                # external -> internal
+                elif method['extern'] and not settings['external_or_internal']:
+                    method_line_num = method['imp_fn_line'] - method['def_st_line']
+                    methods_imp_st_line = method['def_st_line'] + 1
+                    for i in range(method_line_num):
+                        new_line = (settings['spaces'] * ' ') + lines[method['def_st_line'] + 1 + i]
+                        print('DBG: new_lines[%0s] = lines[%0s] = %s' % (
+                            methods_imp_st_line + i,
+                            method['def_st_line'] + 1 + i,
+                            new_line
+                        ))
+                        new_lines.insert(methods_imp_st_line + i, new_line)
+
+        
+
+        # Write all new_lines to file
         f.writelines(new_lines)
         f.truncate()
 
@@ -242,7 +272,7 @@ def run_main(args):
     settings = dict()
 
     # Initial settings
-    settings['path'] = 'D:\\projects\\py\\git_python\\smc_script\\test\\test_sv_extern_func\\example_int_complex.sv'
+    settings['path'] = 'D:\\projects\\py\\git_python\\smc_script\\test\\test_sv_extern_func\\example_int_simple.sv'
     settings['dir_not_file'] = False  # True - work with directory, False - work with file
     settings['silent'] = False
     settings['external_or_internal'] = True  # True - make external, False - make internal
